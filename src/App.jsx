@@ -1,15 +1,43 @@
 import React, { useState } from "react";
 import Column from "./Components/Column";
-import { DndContext, closestCorners } from "@dnd-kit/core";
-import { arrayMove } from "@dnd-kit/sortable";
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  closestCorners,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import Input from "./Components/Input";
 function App() {
-  const [tasks, setTasks] = useState([
-    { id: 1, task: "Learn React" },
-    { id: 2, task: "Complete Frontend Mentor Challenge" },
-    { id: 3, task: "Prepare for Interview" },
-    { id: 4, task: "Review Pull Requests" },
-    { id: 5, task: "Work on Portfolio" },
-  ]);
+  const loadTaskFromLocalStorage = () => {
+    const task = localStorage.getItem("tasks");
+    return task
+      ? JSON.parse(task)
+      : [
+          { id: 1, task: "Learn React" },
+          { id: 2, task: "Complete Frontend Mentor Challenge" },
+          { id: 3, task: "Prepare for Interview" },
+        ];
+  };
+
+  const [tasks, setTasks] = useState(loadTaskFromLocalStorage);
+
+  const addTask = (task) => {
+    const trimedTask = task.trim();
+
+    if (trimedTask === "") {
+      alert("Task cannot be empty!");
+      return;
+    }
+
+    setTasks((tasks) => {
+      const newTasks = [...tasks, { id: tasks.length + 1, task }];
+      localStorage.setItem("tasks", JSON.stringify(newTasks));
+      return newTasks;
+    });
+  };
 
   const getTaskPos = (id) => tasks.findIndex((task) => task.id === id);
   const handleDragEnd = (e) => {
@@ -22,12 +50,22 @@ function App() {
       return arrayMove(tasks, originalPos, newPos);
     });
   };
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center">
+    <div className=" h-screen flex flex-col justify-center items-center">
       <h1>My Tasks</h1>
-
-      <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCorners}>
-        <Column Tasks={tasks} />
+      <Input onSubmit={addTask} />
+      <DndContext
+        sensors={sensors}
+        onDragEnd={handleDragEnd}
+        collisionDetection={closestCorners}
+      >
+        <Column Tasks={tasks} setTasks={setTasks} />
       </DndContext>
     </div>
   );
