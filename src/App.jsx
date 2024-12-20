@@ -57,7 +57,7 @@ function App() {
     })
   );
   return (
-    <div className=" h-screen flex flex-col justify-center items-center">
+    <div className=" h-screen flex flex-col  items-center">
       <h1>My Tasks</h1>
       <Input onSubmit={addTask} />
       <DndContext
