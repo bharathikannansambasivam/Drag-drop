@@ -5,7 +5,6 @@ import deleteIcon from "../assets/trash.svg";
 
 function Task({ id, Task, deleteTask }) {
   const [completed, setCompleted] = useState(false);
-
   const { attributes, listeners, transform, transition, setNodeRef } =
     useSortable({ id });
 
