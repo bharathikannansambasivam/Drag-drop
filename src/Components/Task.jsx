@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import deleteIcon from "../assets/trash.png";
+import deleteIcon from "../assets/trash.svg";
 
 function Task({ id, Task, deleteTask }) {
   const [completed, setCompleted] = useState(false);
-
   const { attributes, listeners, transform, transition, setNodeRef } =
     useSortable({ id });
 
