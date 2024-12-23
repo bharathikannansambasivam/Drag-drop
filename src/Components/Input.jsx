@@ -19,7 +19,7 @@ function Input({ onSubmit }) {
       />
       <button
         onClick={handleSubmit}
-        className="ml-9 p-3 bg-green-500 text-white rounded-md px-6 font-bold hover:bg-green-600 transform transition hover:scale-105  duration-300 ease-in-out "
+        className="ml-9 p-3 bg-blue-500 text-white rounded-md px-6 font-bold hover:bg-green-600 transform transition hover:scale-105  duration-300 ease-in-out "
       >
         Add
       </button>
