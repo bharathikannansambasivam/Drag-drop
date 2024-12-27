@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import deleteIcon from "../assets/trash.svg";
 
 function Task({ id, Task, deleteTask }) {
-  const [completed, setCompleted] = useState(false);
+  // Retrieve the completed state from localStorage, or default to false
+  const storedCompleted = localStorage.getItem(`task-completed-${id}`);
+  const [completed, setCompleted] = useState(storedCompleted === "true");
+
   const { attributes, listeners, transform, transition, setNodeRef } =
     useSortable({ id });
 
@@ -21,6 +24,12 @@ function Task({ id, Task, deleteTask }) {
     setCompleted(!completed);
   };
 
+  const handleDoubleClick = () => {
+    const newCompleted = !completed;
+    setCompleted(newCompleted);
+    localStorage.setItem(`task-completed-${id}`, newCompleted.toString());
+  };
+
   return (
     <div className="flex bg-white">
       <div
@@ -29,12 +38,15 @@ function Task({ id, Task, deleteTask }) {
         {...listeners}
         style={style}
         onClick={handleCompleteTask}
-        className="border p-3 w-full flex gap-3  cursor-move rounded-md touch-none "
+        onDoubleClick={handleDoubleClick}
+        className={`border p-3 w-full flex gap-3 cursor-move rounded-md touch-none ${
+          completed ? "line-through" : ""
+        }`}
       >
-        {completed ? <p className="line-through">{Task}</p> : <p>{Task}</p>}
+        <div className="">{Task}</div>
       </div>
 
-      <div className=" flex justify-center  p-3 items-center rounded-md">
+      <div className="flex justify-center p-3 items-center rounded-md">
         <img
           onClick={handleDelete}
           className="h-5 w-8 cursor-pointer"
